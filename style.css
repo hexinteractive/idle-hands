@@ -25,14 +25,19 @@ p{
   border:2px solid #BFBD9F;
 }
 
-html.idle #box{
+input[type="button"] {
+  position: relative;
+  margin: 10px;
+}
+
+html.idle .blinder{
   opacity:0;
   transition: opacity 5s;
   -moz-transition: opacity 5s; /* Firefox 4 */
   -webkit-transition: opacity 5s; /* Safari and Chrome */
 }
 
-html.notIdle #box{
+html.notIdle .blinder{
   opacity:1;
   transition: opacity 0.4s;
   -moz-transition: opacity 0.4s; /* Firefox 4 */
