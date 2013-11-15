@@ -17,7 +17,7 @@ var idle = function() {
     idleClass: 'idle',
     activeCass: 'notIdle',
     idleTimer: null,
-    timerDelay: 3000,
+    timerDelay: 5000,
     isIdle: false,
     isRunning: false,
     // TODO: accept an array of events to listen to
@@ -28,25 +28,23 @@ var idle = function() {
       // 'top': null,
       // 'left': null
     },
+    threshold: {
+      'mouse': 25,
+      'scroll': 10
+    },
     $html: null,
     $body: null,
 
-    setIdle: function() {
+    setIdle: function() { // sets the idle class on <HTML>
       console.log('setIdle was called');
       // this.$html.css({'background':'deeppink'});
       this.isIdle = true;
       this.$html.addClass(this.idleClass).removeClass(this.activeCass);
       console.log('+x+x+x+x+x+x+x+x+x+x+IDLE+x+x+x+x+x+x+x+x+x+x+');
-      // console.log('this: ', this);
-      // console.log('$html: ', this.$html.hasClass(this.idleClass));
-      // console.log('setIdle finished');
-
-      //this.$body.bind('mousemove',{'pos':this.pos}, this.updatePosition);
-      // this.updatePosition();
       this.startTracking();
     },
 
-    unsetIdle: function() {
+    unsetIdle: function() {// sets the active class on <HTML>
       console.log('unsetIdle was called');
       this.isIdle = false;
       private.$html.removeClass(this.idleClass).addClass(this.activeCass);
@@ -59,20 +57,18 @@ var idle = function() {
     //   return private.getIsIdle;
     // },
 
-    startTimer: function(timerDelay) {
+    startTimer: function(timerDelay) { // after some delay this calls setIdle()
       console.log('startTimer was called');
-      var self = this;
-      function callLater(scope) {
-        // return (function() { self.setIdle();});
-        // instead of calling setIdle, maybe call startTracking
-        return (function() { scope.setIdle();});
+      function resetTimerLater(scope) {
+        return (function() { scope.resetTimer();});
       }
-      var func = callLater(self);
-      this.idleTimer = setTimeout(func, timerDelay);
+      function setIdleLater(scope) {
+        return (function() { scope.setIdle();});// instead of calling setIdle, maybe call startTracking
+      }
+      // this.$body.one('mousemove', resetTimerLater(this));// this fires too often
+      this.idleTimer = setTimeout(setIdleLater(this), timerDelay);
     },
 
-    // function clearTimer(idleTimer) {
-    // clearTimer: function(idleTimer) {
     clearTimer: function() {
       console.log('clearTimer was called');
       clearTimeout(this.idleTimer);
@@ -86,14 +82,11 @@ var idle = function() {
       private.startTimer(private.timerDelay);
     },
 
-    // trackMotion: function(e) {
-    startTracking: function() {
+    startTracking: function() { // records the mouse position of the first mousemove event and binds updatePosition() to mousemove events
       console.log('startTracking was called');
       var self = this;
       function callLater(e,scope) {
-        // console.log('callLater');
         (function() {
-                  // console.log('inner');
                   scope.pos.x = e.pageX;
                   scope.pos.y = e.pageY;
                   // console.log('pos: ', scope.pos);
@@ -110,31 +103,23 @@ var idle = function() {
       private.$body.unbind('mousemove',this.updatePosition);
     },
 
+    // compare the current mouse position to the mouse position that was recorded in startTracking()
+    // if the delta between mouse positions is greater than the mouse threshold then call unsetIdle()
     updatePosition: function(e) {
+
       console.log('updatePosition was called');
       if( isNaN(e.pageX)) { return; /* this was not a real mouse event. get outta here*/ }
 
       var self = this;
       var delta = Math.max( Math.abs(private.pos.x - e.pageX) , Math.abs(private.pos.y - e.pageY) );
-      var obj = {
-        iX : private.pos.x, // initial X position
-        eX : e.pageX, // mouse event X position
-        abs : delta // difference between the initial X position and the X position during the mouse event
-      };
-      console.log(obj);
-      //why was this checking for NaN not !NaN
-      // if( isNaN(delta) || delta > 25 ){
-      if(delta > 25 ){
-        private.pos.x = e.pageX;
-        private.pos.y = e.pageY;
-        console.log('delta of ' + delta + ' removed the idleClass');
-        // private.$html.removeClass(this.idleClass).addClass(this.activeCass);
+      console.log({initialX : private.pos.x, eventX : e.pageX, absDelta : delta });
 
-        // private.resetTimer();
+      if(delta > private.threshold.mouse ){
+        // private.pos.x = e.pageX;
+        // private.pos.y = e.pageY;
+        console.log('delta of ' + delta + ' removed the idleClass');
         private.unsetIdle();
       }
-
-      // console.log('scroll: ', document.documentElement.scrollTop);
 
     }
   };
@@ -155,10 +140,8 @@ var idle = function() {
         return;
       }
       console.log('start was called');
-      // private.startTimer(private.timerDelay);
-      // private.startTracking();
       private.isRunning = true;
-      private.startTimer();
+      private.startTimer(private.timerDelay);
     },
 
     stop: function() {
@@ -187,9 +170,7 @@ var idle = function() {
       // use this to allow user to add elements that can be scrolled
     }
 
-
-    // this just exposed the private parts
-    // private: private
+    // ,private: private // this exposes the private parts
 
   };
 
