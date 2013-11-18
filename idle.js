@@ -94,13 +94,15 @@ var idle = function() {
       }
       var func = function(e){callLater(e,self);};
       this.$body.one('mousemove', func)
-                .bind('mousemove', this.updatePosition);
+                .bind('mousemove', this.updatePosition)
+                .bind('keydown', this.unsetIdle);
     },
 
     stopTracking: function() {
       console.log('stopTracking was called');
       // private.clearTimer();
-      private.$body.unbind('mousemove',this.updatePosition);
+      private.$body.unbind('mousemove', this.updatePosition)
+                   .unbind('keydown', this.unsetIdle);
     },
 
     // compare the current mouse position to the mouse position that was recorded in startTracking()
