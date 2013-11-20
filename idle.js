@@ -24,13 +24,13 @@ var idle = function() {
     // events: ['mousemove', 'scroll','keydown','click','resize'],
     pos: {
       'x': null,
-      'y': null//,
-      // 'top': null,
-      // 'left': null
+      'y': null,
+      'scrollTop': null,
+      'scrollLeft': null
     },
     threshold: {
       'mouse': 25,
-      'scroll': 10
+      'scroll': 15
     },
     $html: null,
     $body: null,
@@ -88,19 +88,22 @@ var idle = function() {
         (function() {
                   scope.pos.x = e.pageX;
                   scope.pos.y = e.pageY;
-                  // console.log('pos: ', scope.pos);
+                  scope.pos.scrollTop = scope.$html.scrollTop();
+                  scope.pos.scrollLeft = scope.$html.scrollLeft();
                 })(e);
       }
       var func = function(e){callLater(e,self);};
       this.$body.one('mousemove', func)
                 .bind('mousemove', this.updatePosition)
-                .bind('keydown', this.unsetIdle);
+                .bind('keydown mousedown', this.unsetIdle);
+      $(window).bind('scroll', this.updateScroll);
     },
 
     stopTracking: function() {
       // console.log('stopTracking was called');
       private.$body.unbind('mousemove', this.updatePosition)
-                   .unbind('keydown', this.unsetIdle);
+                   .unbind('keydown mousedown', this.unsetIdle);
+      $(window).unbind('scroll', this.updateScroll);
     },
 
     // compare the current mouse position to the mouse position that was recorded in startTracking()
@@ -113,9 +116,20 @@ var idle = function() {
       console.log({initialX : private.pos.x, eventX : e.pageX, absDelta : delta });
 
       if(delta > private.threshold.mouse ){
-        // private.pos.x = e.pageX;
-        // private.pos.y = e.pageY;
-        console.log('delta of ' + delta + ' removed the idleClass');
+        console.log('mouse delta of ' + delta + ' removed the idleClass');
+        private.unsetIdle();
+      }
+
+    },
+
+    updateScroll: function(e) {
+      // console.log('updateScroll was called');
+      var self = this;
+      var delta = Math.max( Math.abs(private.pos.scrollTop - private.$html.scrollTop()) , Math.abs(private.pos.scrollLeft - private.$html.scrollLeft()) );
+      console.log({initialX : private.pos.scrollTop, eventX : private.$html.scrollTop(), absDelta : delta });
+
+      if(delta > private.threshold.scroll ){
+        console.log('scroll delta of ' + delta + ' removed the idleClass');
         private.unsetIdle();
       }
 
@@ -159,6 +173,10 @@ var idle = function() {
       return private.timerDelay;
     },
 
+    getIdleState: function() {
+      return private.isIdle;
+    },
+
     trackScrollingOf: function(elem) {
       // use this to allow user to add elements that can be scrolled
     }
@@ -180,11 +198,11 @@ var idle = function() {
 $(document).ready(function(){
   // console.log('manually trigger it to start');
   idle.init();
-  idle.start();
+  idle.start(15000);
 
   $('input[value="start"]').click(function() {
     console.info('start button pushed');
-    idle.start();
+    idle.start(15000);
   });
   $('input[value="stop"]').click(function() {
     console.info('stop button pushed');
