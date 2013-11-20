@@ -36,8 +36,7 @@ var idle = function() {
     $body: null,
 
     setIdle: function() { // sets the idle class on <HTML>
-      console.log('setIdle was called');
-      // this.$html.css({'background':'deeppink'});
+      // console.log('setIdle was called');
       this.isIdle = true;
       this.$html.addClass(this.idleClass).removeClass(this.activeCass);
       console.log('+x+x+x+x+x+x+x+x+x+x+IDLE+x+x+x+x+x+x+x+x+x+x+');
@@ -45,7 +44,7 @@ var idle = function() {
     },
 
     unsetIdle: function() {// sets the active class on <HTML>
-      console.log('unsetIdle was called');
+      // console.log('unsetIdle was called');
       this.isIdle = false;
       private.$html.removeClass(this.idleClass).addClass(this.activeCass);
       console.log('x*x*x*x*x*x*x*x*x*x*x*ACTIVE*x*x*x*x*x*x*x*x*x*x*x');
@@ -58,7 +57,7 @@ var idle = function() {
     // },
 
     startTimer: function(timerDelay) { // after some delay this calls setIdle()
-      console.log('startTimer was called');
+      console.log('startTimer was called with a ' + timerDelay + ' delay');
       function resetTimerLater(scope) {
         return (function() { scope.resetTimer();});
       }
@@ -70,20 +69,20 @@ var idle = function() {
     },
 
     clearTimer: function() {
-      console.log('clearTimer was called');
+      // console.log('clearTimer was called');
       clearTimeout(this.idleTimer);
       this.idleTimer = null;
     },
 
     // TODO: prob refactor to use private or the hitch function
     resetTimer: function() {
-      console.log('resetTimer was called');
+      // console.log('resetTimer was called');
       private.clearTimer();
       private.startTimer(private.timerDelay);
     },
 
     startTracking: function() { // records the mouse position of the first mousemove event and binds updatePosition() to mousemove events
-      console.log('startTracking was called');
+      // console.log('startTracking was called');
       var self = this;
       function callLater(e,scope) {
         (function() {
@@ -99,8 +98,7 @@ var idle = function() {
     },
 
     stopTracking: function() {
-      console.log('stopTracking was called');
-      // private.clearTimer();
+      // console.log('stopTracking was called');
       private.$body.unbind('mousemove', this.updatePosition)
                    .unbind('keydown', this.unsetIdle);
     },
@@ -108,10 +106,8 @@ var idle = function() {
     // compare the current mouse position to the mouse position that was recorded in startTracking()
     // if the delta between mouse positions is greater than the mouse threshold then call unsetIdle()
     updatePosition: function(e) {
-
-      console.log('updatePosition was called');
+      // console.log('updatePosition was called');
       if( isNaN(e.pageX)) { return; /* this was not a real mouse event. get outta here*/ }
-
       var self = this;
       var delta = Math.max( Math.abs(private.pos.x - e.pageX) , Math.abs(private.pos.y - e.pageY) );
       console.log({initialX : private.pos.x, eventX : e.pageX, absDelta : delta });
@@ -124,6 +120,7 @@ var idle = function() {
       }
 
     }
+
   };
 
 
@@ -136,22 +133,16 @@ var idle = function() {
       private.$body = $('body');
     },
 
-    start: function() {
-      if(private.isRunning) {
-        console.log('start was called but it was already started');
-        return;
-      }
-      console.log('start was called');
+    start: function(initialDelay) {
+      if(private.isRunning) {return;}
+      // console.log('start was called');
       private.isRunning = true;
-      private.startTimer(private.timerDelay);
+      private.startTimer(initialDelay || private.timerDelay);
     },
 
     stop: function() {
-      if(!private.isRunning) {
-        console.log('stop was called but it weas already stopped');
-        return;
-      }
-      console.log('stop was called');
+      if(!private.isRunning) {return;}
+      // console.log('stop was called');
       private.unsetIdle();
       private.clearTimer();
       private.isRunning = false;
@@ -164,7 +155,7 @@ var idle = function() {
     },
 
     getTimerDelay: function() {
-      console.log('getTimerDelay was called');
+      // console.log('getTimerDelay was called');
       return private.timerDelay;
     },
 
