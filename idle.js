@@ -177,6 +177,10 @@ var idle = function() {
       return private.isIdle;
     },
 
+    kick: function() {
+      private.unsetIdle();
+    },
+
     trackScrollingOf: function(elem) {
       // use this to allow user to add elements that can be scrolled
     }
@@ -188,25 +192,3 @@ var idle = function() {
   return public;
 
 }();
-
-
-
-
-
-
-
-$(document).ready(function(){
-  // console.log('manually trigger it to start');
-  idle.init();
-  idle.start(15000);
-
-  $('input[value="start"]').click(function() {
-    console.info('start button pushed');
-    idle.start(15000);
-  });
-  $('input[value="stop"]').click(function() {
-    console.info('stop button pushed');
-    idle.stop();
-  });
-
-});//end of ready

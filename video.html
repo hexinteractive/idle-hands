@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" name="viewport">
+<title>Embedding a YouTube Video Player</title>
+<link rel="stylesheet" href="style.css" type="text/css" media="all" />
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="idle.js"></script>
+<script src="jcode.js"></script>
+<!-- READ: https://developers.google.com/youtube/js_api_reference -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+</head>
+<body class="main-column">
+
+<h1 class="blinder ">Idle Hands</h1>
+
+<h2 class="step1 blinder ">Step 1: Watch this short video.</h2>
+
+<div class="">
+    <div class="ratio-wrapper">
+        <div id="ytapiplayer">
+            You need Flash player 8+ and JavaScript enabled to view this video.
+        </div>
+    </div>
+</div>
+
+<h2 class="step2 blinder ">Step 2: Read the description below.</h2>
+
+<div class="desc blinder">
+    <p class="desc blinder">
+        In this project I apply the optical illusion called Silencing. Specifically, continuous change-blindness, which describes our inability to detect gradual changes in a portion of a scene even though we can perceive its current state correctly.
+        This project is an application of the optical illusion called Silencing. The Harvard Vision Lab first described this illusion in 2011. You can watch their <a href="http://visionlab.harvard.edu/silencing/">video demos</a> or read their <a href="http://jwsu.ch/ow/docs/suchow2011silencing.pdf">paper "Motion Silences Awareness of Visual Change"</a>.
+    </p>
+    <p>
+
+    </p>
+</div>
+
+<div class="debug blinder ">
+    <span>Player State: </span>
+    <span id="stateDisplay"></span>
+</div>
+<div class="debug blinder ">
+    <span>Dim State: </span>
+    <span id="dimDisplay"></span>
+</div>
+
+
+<script type="text/javascript">
+// http://www.youtube.com/v/VIDEO_ID?version=3&enablejsapi=1
+
+var VIDEO_ID = 'ubNF9QNEQLA';
+
+var params = { allowScriptAccess: "always" };
+var atts = { id: "myytplayer" };
+swfobject.embedSWF("http://www.youtube.com/v/"+VIDEO_ID+"?enablejsapi=1&playerapiid=ytplayer&version=3",
+                   "ytapiplayer",
+                   "100%",
+                   "100%",
+                   "8",
+                   null,
+                   null,
+                   params,
+                   atts);
+
+
+function onYouTubePlayerReady(playerId) {
+    console.log('YouTube Player is Ready');
+    ytplayer = document.getElementById("myytplayer");
+    ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
+}
+
+function onytplayerStateChange(newState) {
+
+    switch(newState) {
+        case -1: stateName = 'unstarted'; break;   // -1 (unstarted)
+        case  0: stateName = 'ended'; break;       // 0 (ended)
+        case  1: stateName = 'playing'; break;     // 1 (playing)
+        case  2: stateName = 'paused'; break;      // 2 (paused)
+        case  3: stateName = 'buffering'; break;   // 3 (buffering)
+        case  5: stateName = 'video cued'; break;  // 5 (video cued).
+    }
+   console.log("Player's new state: " + stateName);
+
+   switch(newState) {
+        case  1://---------- playing -----------
+        idle.start(15000);
+        $('html').focus();
+        break;
+        case -1://---------- unstarted ---------
+        // highlight step 1
+        $('.step1').addClass('step-active');
+        case  2://---------- paused ------------
+        idle.stop();
+        break;
+        case  0://---------- ended -------------
+        // dim step 1
+        // highlight step 2
+        // show the project description
+        $('.step1').removeClass('step-active');
+        $('.step2').addClass('step-active');
+        idle.stop();
+        break;
+    }
+
+    $('#stateDisplay').html(stateName);
+
+}
+
+
+//.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:
+
+
+$(document).ready(function(){
+
+
+
+
+
+});//end of ready
+
+
+
+
+</script>
+
+</body>
+</html>

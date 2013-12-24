@@ -2,17 +2,48 @@ html,
 body{
 	height:100%;
 	width:100%;
-	background-color:#1B1D26; font-family:arial,verdana,sans-serif; margin:0; padding:0;
+	/*background-color:#1B1D26; */
+  font-family:arial,verdana,sans-serif;
+  margin:0;
+  padding:0;
 	color:#eee;
 	margin:0;
 	padding:0;
 }
 
-head{display:block;}
-title{display:block; height:45px; padding:0px 2em; background-color:#fc0; margin:0 auto; font-size:32px; font-weight:bold; color:#333;}
+html {
+  background-color: #102F39;
+  background-image: url(pattern_bg.png);
+  background-repeat: repeat;
+}
+
+html .debug {
+  display: none;
+}
+
+html.debug .debug {
+  font-family: monospace;
+  background: #023;
+  color: #cdf;
+  padding: 0.5em;
+  margin: 0.5em;
+  /*display: inherit;*/
+  display: inline-block;
+}
+
+h1 {
+  font-family: helvetica, sans-serif;
+  font-weight: 100;
+  font-size: 60px;
+  color: #eee;
+  /*margin: 0.5em auto 1em;*/
+  margin: 0.5em auto;
+  width: 853px
+}
 
 p{
-  margin:1em 0.5em;
+  /*margin:1em 0.5em;*/
+  margin: 0 0 1em 0;
 }
 
 #box {
@@ -32,14 +63,102 @@ input[type="button"] {
 
 html.idle .blinder{
   opacity:0;
-  transition: opacity 5s;
-  -moz-transition: opacity 5s; /* Firefox 4 */
-  -webkit-transition: opacity 5s; /* Safari and Chrome */
+
+  -moz-transition: opacity 20s; /* Firefox 4 */
+  -webkit-transition: opacity 20s; /* Safari and Chrome */
+  transition: opacity 20s;
 }
 
 html.notIdle .blinder{
   opacity:1;
-  transition: opacity 0.4s;
-  -moz-transition: opacity 0.4s; /* Firefox 4 */
-  -webkit-transition: opacity 0.4s; /* Safari and Chrome */
+  -moz-transition: opacity 0.6s; /* Firefox 4 */
+  -webkit-transition: opacity 0.6s; /* Safari and Chrome */
+  transition: opacity 0.6s;
 }
+
+
+html.notIdle {
+  background-color: #102F39;
+
+  -moz-transition: background-color 0.6s; /* Firefox 4 */
+  -webkit-transition: background-color 0.6s; /* Safari and Chrome */
+  transition: background-color 0.6s;
+}
+
+html.idle {
+  background-color: #000;
+  cursor: none;
+  -moz-transition: background-color 20s; /* Firefox 4 */
+  -webkit-transition: background-color 20s; /* Safari and Chrome */
+  transition: background-color 20s;
+}
+
+
+
+.main-column {
+  position: relative;
+  min-width: 300px;
+  max-width: 853px;
+  margin: 0 auto;
+  padding: 0 200px;
+}
+
+.ratio-wrapper {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding: 0 0 56.25% 0;
+}
+
+#myytplayer {
+  position: absolute;
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  outline-color: #000;
+  /*height: 100%;*/
+  /*width: 100%;*/
+}
+
+.step1,
+.step2 {
+  /*color: #616D74;*/
+  /*color: #186B85;*/
+  color: #489BB5;
+  font-size: 34px;
+  font-weight: 100;
+  -webkit-transition: color 0.4s;
+  -moz-transition: color 0.4s;
+  transition: color 0.4s;
+  /*margin-top: 1.5em;
+  margin-bottom: 1em;*/
+  /*margin: 1.5em 0 1em 0;*/
+  /*margin: 1.5em 0;*/
+  margin: 0 0 0.4em 0;
+}
+
+.step-active {
+  color: #00CBFF;
+  color: #FC870F;
+}
+
+.step1 {
+
+}
+
+.step2 {
+
+}
+
+.desc {
+  font-size: 24px;
+  font-weight: 100;
+  color: white;
+
+/*  obuscated view
+  color: #424242;
+  text-shadow: 0.5ex 0 0 #424242, -0.5ex 0 0 #424242, 0 0.4ex 0 #424242, 0 -0.4ex 0 #424242;
+*/
+}
+
